@@ -74,7 +74,10 @@ func main() {
 			Value: formattedData,
 		})
 	}
-	updateKvStore(kvs)
+	err = updateKvStore(kvs)
+	if err != nil {
+		log.Fatal("Failed to update KV Store: ", err)
+	}
 }
 
 func updateKvStore(kvSlice []models.RowKv) error {
@@ -105,10 +108,10 @@ func updateKvStore(kvSlice []models.RowKv) error {
 
 	var kv nats.KeyValue
 	// Try to open an existing KV store
-	kv, err = js.KeyValue("weather_serv")
+	kv, err = js.KeyValue("weather")
 	if err != nil {
 		// Unable to open an existing store. Create the KV store.
-		kv, err = js.CreateKeyValue(&nats.KeyValueConfig{Bucket: "picker", History: 1})
+		kv, err = js.CreateKeyValue(&nats.KeyValueConfig{Bucket: "weather", History: 1})
 		if err != nil {
 			logger.Printf("ERROR 3: %v\n", err)
 			return err
