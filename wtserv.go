@@ -48,12 +48,11 @@ func main() {
 		longitude, _ := strconv.ParseFloat(s.Longitude, 32)
 
 		// get weather forecasts as json
-		//wt.GetCurrentWeather(latitude, longitude, apiKey)
-		//wt.GetForecastWeather(latitude, longitude, apiKey)
-		fc, err := wt.GetFC(latitude, longitude, apiKey)
+		fc, err := wt.GetFiveDaysForecast(latitude, longitude, apiKey)
 		if err != nil {
-			return
+			log.Fatal("Failed to fetch weather forecast: ", err)
 		}
+
 		// Marshal the forecastData slice into JSON with proper indentation
 		formattedData, err := json.MarshalIndent(fc, "", "    ")
 		if err != nil {
@@ -62,10 +61,10 @@ func main() {
 		}
 
 		// Write formatted JSON data to a file
-		if err := os.WriteFile("formatted_forecast_data.json", formattedData, 0644); err != nil {
-			fmt.Println("Error writing file:", err)
-			return
-		}
+		//if err := os.WriteFile("formatted_forecast_data.json", formattedData, 0644); err != nil {
+		//	fmt.Println("Error writing file:", err)
+		//	return
+		//}
 
 		// store result in KV store in NATS
 		// K: id_store, V: json of weather data

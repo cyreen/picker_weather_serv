@@ -38,7 +38,8 @@ func GetCurrentWeather(latitude float64, longitude float64, apiKey string) {
 	fmt.Printf("Wind Speed: %.1f m/s\n", weatherData.Wind.Speed)
 }
 
-func GetFC(latitude float64, longitude float64, apiKey string) ([]models.ForecastResponse, error) {
+// returns a 3-hourly forecast for 5 days
+func GetFiveDaysForecast(latitude float64, longitude float64, apiKey string) ([]models.ForecastResponse, error) {
 	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f&appid=%s&units=metric", latitude, longitude, apiKey)
 
 	resp, err := http.Get(url)
@@ -62,44 +63,4 @@ func GetFC(latitude float64, longitude float64, apiKey string) ([]models.Forecas
 	}
 
 	return forecastResponses, nil
-}
-
-func GetForecastWeather(latitude float64, longitude float64, apiKey string) {
-	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f&appid=%s&units=metric", latitude, longitude, apiKey)
-
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Println("Error fetching weather data:", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading response body:", err)
-		return
-	}
-
-	var forecastData models.ForecastData
-	err = json.Unmarshal(body, &forecastData)
-	if err != nil {
-		fmt.Println("Error parsing JSON:", err)
-		return
-	}
-
-	// Marshal the struct back into formatted JSON
-	//formattedData, err := json.MarshalIndent(forecastData, "", "    ")
-	//if err != nil {
-	//	fmt.Println("Error marshalling JSON:", err)
-	//	return
-	//}
-	//
-	//// Write formatted JSON data to a file
-	//if err := ioutil.WriteFile("formatted_forecast_data.json", formattedData, 0644); err != nil {
-	//	fmt.Println("Error writing file:", err)
-	//	return
-	//}
-
-	//fmt.Println(forecastData)
-	fmt.Println(string(body))
 }

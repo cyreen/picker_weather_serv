@@ -21,10 +21,10 @@ type ForecastResponse struct {
 }
 
 type ForecastData struct {
-	Cod     string `json:"cod"`
-	Message int    `json:"message"`
-	Cnt     int    `json:"cnt"`
-	List    []struct {
+	//Cod     string `json:"cod"`
+	//Message int    `json:"message"`
+	//Cnt     int    `json:"cnt"`
+	List []struct {
 		Dt   int `json:"dt"`
 		Main struct {
 			Temp      float64 `json:"temp"`
@@ -57,19 +57,19 @@ type ForecastData struct {
 		} `json:"sys"`
 		DtTxt string `json:"dt_txt"`
 	} `json:"list"`
-	City struct {
-		ID    int    `json:"id"`
-		Name  string `json:"name"`
-		Coord struct {
-			Lat float64 `json:"lat"`
-			Lon float64 `json:"lon"`
-		} `json:"coord"`
-		Country    string `json:"country"`
-		Population int    `json:"population"`
-		Timezone   int    `json:"timezone"`
-		Sunrise    int    `json:"sunrise"`
-		Sunset     int    `json:"sunset"`
-	} `json:"city"`
+	//City struct {
+	//	ID    int    `json:"id"`
+	//	Name  string `json:"name"`
+	//	Coord struct {
+	//		Lat float64 `json:"lat"`
+	//		Lon float64 `json:"lon"`
+	//	} `json:"coord"`
+	//	Country    string `json:"country"`
+	//	Population int    `json:"population"`
+	//	Timezone   int    `json:"timezone"`
+	//	Sunrise    int    `json:"sunrise"`
+	//	Sunset     int    `json:"sunset"`
+	//} `json:"city"`
 }
 
 type WeatherData struct {
