@@ -3,39 +3,33 @@ package wtfetchr
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"picker_weather_serv/models"
+	"time"
 )
 
-func GetCurrentWeather(latitude float64, longitude float64, apiKey string) {
+func GetCurrentWeather(latitude float64, longitude float64, apiKey string) (models.ForecastResponse, error) {
 	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&appid=%s&units=metric", latitude, longitude, apiKey)
 
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println("Error fetching weather data:", err)
-		return
+		return models.ForecastResponse{}, fmt.Errorf("error fetching weather data: %w", err)
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println("Error reading response body:", err)
-		return
-	}
-
 	var weatherData models.WeatherData
-	err = json.Unmarshal(body, &weatherData)
-	if err != nil {
-		fmt.Println("Error parsing JSON:", err)
-		return
+	if err := json.NewDecoder(resp.Body).Decode(&weatherData); err != nil {
+		return models.ForecastResponse{}, fmt.Errorf("error decoding JSON: %w", err)
 	}
 
-	fmt.Printf("Current weather at coordinates (Lat: %.2f, Lon: %.2f):\n", latitude, longitude)
-	fmt.Printf("Temperature: %.1f°C\n", weatherData.Main.Temp)
-	fmt.Printf("Description: %s\n", weatherData.Weather[0].Description)
-	fmt.Printf("Humidity: %d%%\n", weatherData.Main.Humidity)
-	fmt.Printf("Wind Speed: %.1f m/s\n", weatherData.Wind.Speed)
+	//Extract datetime and temperature from the forecastData
+	var forecastResponse models.ForecastResponse
+	forecastResponse = models.ForecastResponse{
+		Datetime:    time.Now().Format("2006-01-02 15:04:05"),
+		Temperature: weatherData.Main.Temp,
+	}
+
+	return forecastResponse, nil
 }
 
 // returns a 3-hourly forecast for 5 days

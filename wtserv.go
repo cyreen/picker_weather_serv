@@ -48,13 +48,15 @@ func main() {
 		longitude, _ := strconv.ParseFloat(s.Longitude, 32)
 
 		// get weather forecasts as json
-		fc, err := wt.GetFiveDaysForecast(latitude, longitude, apiKey)
+		currWeather, err := wt.GetCurrentWeather(latitude, longitude, apiKey)
+		forecast, err := wt.GetFiveDaysForecast(latitude, longitude, apiKey)
 		if err != nil {
 			log.Fatal("Failed to fetch weather forecast: ", err)
 		}
+		forecast = append(forecast, currWeather)
 
 		// Marshal the forecastData slice into JSON with proper indentation
-		formattedData, err := json.MarshalIndent(fc, "", "    ")
+		formattedData, err := json.MarshalIndent(forecast, "", "    ")
 		if err != nil {
 			fmt.Println("Error marshalling JSON:", err)
 			return
