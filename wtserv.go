@@ -16,25 +16,26 @@ import (
 )
 
 func main() {
-	// Load environment variables from .env file
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	// Load environment variables from .env file
 	apiKey := os.Getenv("API_KEY")
-
 	dbHost := os.Getenv("DB_HOST")
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 	dbPort := os.Getenv("DB_PORT")
 
+	// Connect to Postgres Database
 	pg, err := db.ConnectToPostgreSQL(dbHost, dbUser, dbPassword, dbName, dbPort)
 	if err != nil {
 		log.Fatal("Failed to connect to the database:", err)
 	}
 
+	// Get list of stores
 	stores, err := db.FetchStores(pg)
 	if err != nil {
 		log.Fatal("Failed to fetch stores:", err)
@@ -47,7 +48,7 @@ func main() {
 		latitude, _ := strconv.ParseFloat(s.Latitude, 32)
 		longitude, _ := strconv.ParseFloat(s.Longitude, 32)
 
-		// get weather forecasts as json
+		// get current weather + forecasted weather as json
 		currWeather, err := wt.GetCurrentWeather(latitude, longitude, apiKey)
 		forecast, err := wt.GetFiveDaysForecast(latitude, longitude, apiKey)
 		if err != nil {
